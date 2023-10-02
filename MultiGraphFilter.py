@@ -56,33 +56,33 @@ class MultiDimensionalGCN(nn.Module):
     def forward(self, input, adjs):
         return self.layer(input, adjs)
 
-num_nodes = 3
-in_features = 4
-out_features = 2
-num_dimensions = 2
+# num_nodes = 3
+# in_features = 4
+# out_features = 2
+# num_dimensions = 2
 
-# Simulated input features, a simple example, can be modified based on real data
-inputs = torch.rand((num_nodes, in_features))
+# # Simulated input features, a simple example, can be modified based on real data
+# inputs = torch.rand((num_nodes, in_features))
 
-# The 2-dimensional adjacency matrix is simulated
-adjs = [torch.eye(num_nodes), torch.eye(num_nodes)]
+# # The 2-dimensional adjacency matrix is simulated
+# adjs = [torch.eye(num_nodes), torch.eye(num_nodes)]
 
 
-# Model
-model = MultiDimensionalGCN(in_features, out_features, num_dimensions)
-criterion = nn.CrossEntropyLoss()  # 仅作为示例，可以根据需求修改
-optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+# # Model
+# model = MultiDimensionalGCN(in_features, out_features, num_dimensions)
+# criterion = nn.CrossEntropyLoss()  # 仅作为示例，可以根据需求修改
+# optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
-# Target output
-targets = torch.rand((num_nodes, out_features))
+# # Target output
+# targets = torch.rand((num_nodes, out_features))
 
-# Train
-for epoch in range(100):
-    optimizer.zero_grad()
-    outputs = model(inputs, adjs)
-    loss = criterion(outputs, targets)
-    loss.backward()
-    optimizer.step()
-    if epoch % 10 == 0:
-        print(f"Epoch {epoch}, Loss: {loss.item()}")
+# # import 
+# for epoch in range(100):
+#     optimizer.zero_grad()
+#     outputs = model(inputs, adjs)
+#     loss = criterion(outputs, targets)
+#     loss.backward()
+#     optimizer.step()
+#     if epoch % 10 == 0:
+#         print(f"Epoch {epoch}, Loss: {loss.item()}")
 
