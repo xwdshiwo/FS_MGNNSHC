@@ -30,9 +30,9 @@ Files：
 
 Upon execution, the program processes the graph and outputs rankings from the multidimensional feature evaluation and clustering information:
 
-**feature evaluator result: [24 21 0 27 26 16 22 23 5 28 18 11 17 8 3 20 19 1 12 14 6 9 10 2 29 4 7 25 13 15]
+**feature evaluator result: [24 21 0 27 26 16 22 23 5 28 18 11 17 8 3 20 19 1 12 14 6 9 10 2 29 4 7 25 13 15]**
 
-cluster result: [1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]**
+**cluster result: [1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]**
 
 Based on this information, we can filter the optimal nodes from each cluster for further graph pooling tasks. The graph pooling will establish a further classification model and output additional node rankings:
 
