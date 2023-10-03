@@ -41,7 +41,7 @@ class GNNpool(torch.nn.Module):
         x = F.dropout(x, p=0.5, training=self.training)
         
         # First pooling
-        x, edge_index, _, batch, _, _ = self.pool1(x, edge_index, batch=batch)
+        x, edge_index, _, batch, perm1, _ = self.pool1(x, edge_index, batch=batch)
         
         # Second set of graph convolutions with ReLU and dropout
         x = F.relu(self.conv4(x, edge_index))
@@ -52,13 +52,13 @@ class GNNpool(torch.nn.Module):
         x = F.dropout(x, p=0.5, training=self.training)
         
         # Second pooling
-        x, edge_index, _, batch, _, _ = self.pool2(x, edge_index, batch=batch)
+        x, edge_index, _, batch, perm2, _ = self.pool2(x, edge_index, batch=batch)
         
         # Global pooling (readout) and classifier
         x = global_mean_pool(x, batch)
         x = self.lin(x)
         
-        return F.log_softmax(x, dim=1)
+        return F.log_softmax(x, dim=1), perm1, perm2
 
 # # Sample usage
 # adj_matrix = torch.rand((100, 100))  # Sample adjacency matrix
@@ -75,15 +75,15 @@ class GNNpool(torch.nn.Module):
 # label = torch.randint(0, 2, (1,))  # Change the range to 0 to 29 for generating labels
 
 
-# # Training loop
 # model.train()
 # for epoch in range(100):
 #     optimizer.zero_grad()
-#     out = model(node_features, edge_index)
+#     out, perm1, perm2 = model(node_features, edge_index)
 #     loss = criterion(out, label)
 #     loss.backward()
 #     optimizer.step()
 #     print(f"Epoch {epoch+1}, Loss: {loss.item()}")
 
-# # Print the node weights after training
-# print(model.state_dict())
+# # Print the node ranks after training
+# print("Node ranks after first pooling:", perm1)
+# print("Node ranks after second pooling:", perm2)
