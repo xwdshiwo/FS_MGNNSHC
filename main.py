@@ -48,20 +48,24 @@ adjs = processor.filter_graph_adj_matrices(adjs)
 for i in range(Graph_filter_layers):
     outputs = model(inputs, adjs)
 
+'''
+Here you need to enter the final adjacency matrix, 
+let's take the first dimension in the multidimensional relation as an example.
+'''
 lp = LinkPrediction(adjs[0], outputs)
-
 best_mrr = 0
-for epoch in range(1, 10):
+for epoch in range(1, 30):
     loss = lp.train()
     mrr = lp.test()
     if mrr > best_mrr:
         best_mrr = mrr
     print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, MRR: {mrr:.4f}')
 
-predicted_adj_matrix = lp.predict()
+predicted_adj_matrix = lp.predict_new_adj_matrix()
 evaluator = FeatureEvaluator(outputs.detach().numpy(), y)
 final_ranking = evaluator.get_feature_ranking()
-discovery = SupernodeDiscovery(node_features=None, adj_matrix=adjs[0])
+print('feature evaluator result:',final_ranking)
+discovery = SupernodeDiscovery(node_features=None, adj_matrix=predicted_adj_matrix)
 labels = discovery.find_clusters()
 print('cluster result:',labels)
 '''
@@ -74,23 +78,24 @@ where all features are assumed to be used for the graph classification task.
 model2 = GNNpool(30, 30)
 optimizer = torch.optim.Adam(model2.parameters(), lr=0.001)
 criterion = torch.nn.CrossEntropyLoss()
-y = torch.tensor([1]) # one sample as example
+y = torch.tensor([1]) # one sample as example. In practice, you should enter the sample batch
 # outputs = outputs.long()
 adj = adjs[0].long()
 # Training loop
 edge_index = (adj > 0.5).nonzero(as_tuple=False).t()
 model.train()
-torch.autograd.set_detect_anomaly(True)
+
 outputs2 = outputs[:]
-for epoch in range(10):
+for epoch in range(100):
     optimizer.zero_grad()
-    out = model2(outputs2, edge_index)
+    out, perm1, perm2 = model2(outputs2, edge_index)
     loss = criterion(out,y)
     loss.backward(retain_graph=True)
     optimizer.step()
     print(f"Epoch {epoch+1}, Loss: {loss.item()}")
 
-# Print the node weights after training
-print(model.state_dict())
+# # Print the node ranks after training
+# print("Node ranks after first pooling:", perm1)
+print("Node ranks after second pooling:", perm2)
 
 
