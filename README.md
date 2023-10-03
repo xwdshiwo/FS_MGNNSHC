@@ -7,10 +7,6 @@ The current version of the code is not fully curated. We present the core code a
 
 You can achieve this by running the main.py script, which creates a graph-structured dataset with two types of relationships to perform feature selection and classification tasks.
 
-
-![fig1](https://github.com/xwdshiwo/FS_MGNNSHC/assets/35399345/960bc131-84de-4d03-b437-3265598c3a11)
-
-
 Files：
 
 **GraphPurification.py**: This module purifies redundant relationships within the graph.
@@ -26,3 +22,8 @@ Upon execution, the program processes the graph and outputs rankings from the mu
 cluster result: [1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]**
 Based on this information, we can filter the optimal nodes from each cluster for further graph pooling tasks. The graph pooling will establish a further classification model and output additional node rankings:
 **Node ranks after second pooling: tensor([ 0, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 1, 2, 3, 4, 5, 6, 7, 8])**
+
+![fig1](https://github.com/xwdshiwo/FS_MGNNSHC/assets/35399345/960bc131-84de-4d03-b437-3265598c3a11)
+
+
+
