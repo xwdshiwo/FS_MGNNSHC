@@ -71,6 +71,42 @@ class LinkPrediction:
             z = self.model(self.data.x, self.data.edge_index)
         edge_scores = (z[self.data.edge_index[0]] * z[self.data.edge_index[1]]).sum(dim=1)
         return edge_scores
+    
+    def save_best_model(self):
+        self.best_model_state = self.model.state_dict()
+    
+    def load_best_model(self):
+        self.model.load_state_dict(self.best_model_state)
+    
+    def predict_new_adj_matrix(self, threshold=0.5):
+        edge_scores = self.predict()
+        predicted_adj_matrix = (edge_scores > threshold).int().reshape(adj_matrix.shape)
+        return predicted_adj_matrix
+
+    def predict(self):
+        self.model.eval()
+        with torch.no_grad():
+            z = self.model(self.data.x, self.data.edge_index)
+            
+        # 创建所有可能的边对
+        row, col = torch.combinations(torch.arange(z.size(0)), 2).t()
+        edge_scores = torch.sigmoid((z[row] * z[col]).sum(dim=1))
+        
+        return edge_scores, row, col
+    
+    def predict_new_adj_matrix(self):
+        self.model.eval()
+        num_nodes = self.data.num_nodes
+        new_adj_matrix = torch.zeros((num_nodes, num_nodes), dtype=torch.float32)
+        with torch.no_grad():
+            z = self.model(self.data.x, self.data.edge_index)
+            edge_scores = (z[self.data.edge_index[0]] * z[self.data.edge_index[1]]).sum(dim=1)
+            # threshold to decide which edges to add; this can be adjusted based on your needs
+            threshold = edge_scores.mean()
+            chosen_edges = edge_scores >= threshold
+            chosen_row, chosen_col = self.data.edge_index[:, chosen_edges]
+            new_adj_matrix[chosen_row, chosen_col] = 1
+        return new_adj_matrix
 
 # Example usage:
 
@@ -86,7 +122,9 @@ class LinkPrediction:
 #     mrr = lp.test()
 #     if mrr > best_mrr:
 #         best_mrr = mrr
+#         lp.save_best_model()
 #     print(f'Epoch: {epoch:03d}, Loss: {loss:.4f}, MRR: {mrr:.4f}')
 
-# predicted_adj_matrix = lp.predict()
+# lp.load_best_model()
+# predicted_adj_matrix = lp.predict_new_adj_matrix()
 # print(predicted_adj_matrix)
