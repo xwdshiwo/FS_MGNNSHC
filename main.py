@@ -95,7 +95,6 @@ for epoch in range(100):
     print(f"Epoch {epoch+1}, Loss: {loss.item()}")
 
 # # Print the node ranks after training
-# print("Node ranks after first pooling:", perm1)
 print("Node ranks after second pooling:", perm2)
 
 
